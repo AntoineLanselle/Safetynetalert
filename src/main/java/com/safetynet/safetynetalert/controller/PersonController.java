@@ -2,6 +2,8 @@ package com.safetynet.safetynetalert.controller;
 
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +29,8 @@ import com.safetynet.safetynetalert.services.PersonService;
 @RequestMapping(path = "/person")
 public class PersonController {
 
+	private static final Logger LOGGER = LogManager.getLogger(PersonController.class);
+
 	@Autowired
 	private PersonService personService;
 
@@ -39,6 +43,7 @@ public class PersonController {
 	 */
 	@GetMapping
 	public ResponseEntity<List<Person>> getAllPersons() {
+		LOGGER.info("received Get request - http://localhost:8080/person");
 		return ResponseEntity.status(HttpStatus.OK).body(this.personService.getPersons());
 	}
 
@@ -49,12 +54,13 @@ public class PersonController {
 	 * 
 	 * @return response entity statu OK avec comme body un message pour signaler ce
 	 *         qui a ete fait.
-	 *         
+	 * 
 	 * @throws AlreadyExistException
 	 * 
 	 */
 	@PostMapping()
 	public ResponseEntity<String> addPerson(@RequestBody Person person) throws AlreadyExistException {
+		LOGGER.info("received Post request - http://localhost:8080/person"+person);
 		this.personService.addPerson(person);
 		return ResponseEntity.status(HttpStatus.OK)
 				.body("La personne " + person.getFirstName() + " " + person.getLastName() + " a bien été créée");
@@ -73,6 +79,7 @@ public class PersonController {
 	 */
 	@PutMapping()
 	public ResponseEntity<String> updatePerson(@RequestBody Person person) throws RessourceNotFoundException {
+		LOGGER.info("received Put request - http://localhost:8080/person"+person);
 		this.personService.updatePerson(person);
 		return ResponseEntity.status(HttpStatus.OK)
 				.body("La personne " + person.getFirstName() + " " + person.getLastName() + " a bien été modifiée");
@@ -93,6 +100,7 @@ public class PersonController {
 	@DeleteMapping()
 	public ResponseEntity<String> deletePerson(@RequestParam(name = "firstName", required = true) String firstName,
 			@RequestParam(name = "lastName", required = true) String lastName) throws RessourceNotFoundException {
+		LOGGER.info("received Delete request - http://localhost:8080/person?firstName="+firstName+"&lastName="+lastName);
 		this.personService.deletePerson(firstName, lastName);
 		return ResponseEntity.status(HttpStatus.OK)
 				.body("La personne " + firstName + " " + lastName + " a bien été suprimée");

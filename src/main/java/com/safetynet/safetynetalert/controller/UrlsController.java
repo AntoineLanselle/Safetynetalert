@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +30,8 @@ import com.safetynet.safetynetalert.services.UrlsService;
 @RestController
 public class UrlsController {
 
+	private static final Logger LOGGER = LogManager.getLogger(UrlsController.class);
+
 	@Autowired
 	private UrlsService urlsService;
 
@@ -45,6 +49,7 @@ public class UrlsController {
 	@GetMapping(path = "/childAlert")
 	public ResponseEntity<MappingJacksonValue> childAlert(
 			@RequestParam(name = "address", required = true) String address) throws IOException, ParseException {
+		LOGGER.info("received Get request - http://localhost:8080/childAlert?address="+address);
 
 		ResponseChildAlert response = this.urlsService.childAlert(address);
 
@@ -78,7 +83,7 @@ public class UrlsController {
 	public ResponseEntity<MappingJacksonValue> phoneAlert(
 			@RequestParam(name = "firestation", required = true) String firestation_number)
 			throws IOException, ParseException {
-
+		LOGGER.info("received Get request - http://localhost:8080/phoneAlert?firestation="+firestation_number);
 		List<String> response = this.urlsService.phoneAlert(firestation_number);
 		MappingJacksonValue filtres = new MappingJacksonValue(response);
 		return ResponseEntity.status(HttpStatus.OK).body(filtres);
@@ -102,6 +107,7 @@ public class UrlsController {
 	@GetMapping(path = "/fire")
 	public ResponseEntity<MappingJacksonValue> fire(@RequestParam(name = "address", required = true) String address)
 			throws IOException, ParseException {
+		LOGGER.info("received Get request - http://localhost:8080/fire?address="+address);
 
 		ResponseFire response = this.urlsService.fire(address);
 
@@ -134,6 +140,7 @@ public class UrlsController {
 	public ResponseEntity<MappingJacksonValue> floodStations(
 			@RequestParam(name = "stations", required = true) List<String> station_numbers)
 			throws IOException, ParseException {
+		LOGGER.info("received Get request - http://localhost:8080/flood/stations?stations="+station_numbers);
 
 		List<Famille> response = this.urlsService.floodStations(station_numbers);
 
@@ -171,6 +178,7 @@ public class UrlsController {
 	public ResponseEntity<MappingJacksonValue> personInfo(
 			@RequestParam(name = "firstName", required = true) String firstName,
 			@RequestParam(name = "lastName", required = true) String lastName) throws IOException, ParseException {
+		LOGGER.info("received Get request - http://localhost:8080/personInfo?firstName="+firstName+"&lastName="+lastName);
 
 		List<Personne> response = this.urlsService.personInfo(firstName, lastName);
 
@@ -201,7 +209,7 @@ public class UrlsController {
 	@GetMapping(path = "/communityEmail")
 	public ResponseEntity<MappingJacksonValue> communityEmail(@RequestParam(name = "city", required = true) String city)
 			throws IOException {
-
+		LOGGER.info("received Get request - http://localhost:8080/communityEmail?city="+city);
 		List<String> response = this.urlsService.communityEmail(city);
 		MappingJacksonValue filtres = new MappingJacksonValue(response);
 		return ResponseEntity.status(HttpStatus.OK).body(filtres);

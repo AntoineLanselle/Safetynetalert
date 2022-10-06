@@ -37,10 +37,6 @@ public class JsonLoadService {
 	@Value("${dataSourceJson}")
 	private String dataFilePath;
 
-	/**
-	 * 
-	 * 
-	 */
 	@PostConstruct
 	public void readJsonData() {
 		ObjectMapper mapper = new ObjectMapper();

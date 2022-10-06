@@ -134,7 +134,6 @@ public class UrlsServiceImpl implements UrlsService {
 		return response;
 	}
 
-
 	/**
 	 * Retourne une liste de tous les foyers desservis par les casernes.
 	 * 

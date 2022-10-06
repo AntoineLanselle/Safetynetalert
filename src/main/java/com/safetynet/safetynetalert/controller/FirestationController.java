@@ -3,6 +3,8 @@ package com.safetynet.safetynetalert.controller;
 import java.text.ParseException;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,6 +35,8 @@ import com.safetynet.safetynetalert.services.FirestationService;
 @RequestMapping(path = "/firestation")
 public class FirestationController {
 
+	private static final Logger LOGGER = LogManager.getLogger(FirestationController.class);
+	
 	@Autowired
 	private FirestationService firestationService;
 
@@ -45,6 +49,7 @@ public class FirestationController {
 	 */
 	@GetMapping(path = "/all")
 	public ResponseEntity<List<Firestation>> getAllFirestations() {
+		LOGGER.info("received Get request - http://localhost:8080/firestation/all");
 		return ResponseEntity.status(HttpStatus.OK).body(this.firestationService.getFirestations());
 	}
 
@@ -64,6 +69,7 @@ public class FirestationController {
 	@GetMapping()
 	public ResponseEntity<MappingJacksonValue> getFirestation(
 			@RequestParam(name = "stationNumber", required = true) String station_number) throws ParseException {
+		LOGGER.info("received Get request - http://localhost:8080/firestation?stationNumber=" + station_number);
 		ResponseGetFirestation response = this.firestationService.getFirestation(station_number);
 		SimpleBeanPropertyFilter monFiltre = SimpleBeanPropertyFilter.serializeAllExcept("email", "dossierMedical",
 				"age");
@@ -84,6 +90,7 @@ public class FirestationController {
 	 */
 	@PostMapping()
 	public ResponseEntity<String> addFirestation(@RequestBody Firestation firestation) throws AlreadyExistException {
+		LOGGER.info("received Post request - http://localhost:8080/firestation with body" + firestation);
 		this.firestationService.addFirestation(firestation);
 		return ResponseEntity.status(HttpStatus.OK).body(
 				"La firestation " + firestation.getStation() + " " + firestation.getAddress() + " a bien été ajoutée");
@@ -107,6 +114,7 @@ public class FirestationController {
 	public ResponseEntity<String> updateFirestation(@RequestParam(name = "station", required = true) String station,
 			@RequestParam(name = "address", required = true) String address, @RequestParam(name = "newStation", required = true) String newStation)
 			throws RessourceNotFoundException, AlreadyExistException {
+		LOGGER.info("received Put request - http://localhost:8080/firestation?station="+station+"&address="+address+"&newStation="+newStation);
 		this.firestationService.updateFirestation(station, address, newStation);
 		return ResponseEntity.status(HttpStatus.OK).body(
 				"Le numero de station à l'address: " + address + " est maintenant: " + newStation);
@@ -128,16 +136,20 @@ public class FirestationController {
 	public ResponseEntity<String> deleteFirestation(@RequestParam(name = "station", required = false) String station,
 			@RequestParam(name = "address", required = false) String address) throws RessourceNotFoundException {
 		if(station!=null && address!=null) {
+			LOGGER.info("received Delete request - http://localhost:8080/firestation?station="+station+"&address="+address);
 			this.firestationService.deleteStation(station);
 			this.firestationService.deleteAddress(address);
 			return ResponseEntity.status(HttpStatus.OK).body("La Station: " + station + " et l'Address: " + address + " ont bien été supprimés");
 		} else if(station!=null) {
+			LOGGER.info("received Delete request - http://localhost:8080/firestation?station="+station+"&address=");
 			this.firestationService.deleteStation(station);
 			return ResponseEntity.status(HttpStatus.OK).body("La Station: " + station + " a bien été supprimée");
 		} else if(address!=null) {
+			LOGGER.info("received Delete request - http://localhost:8080/firestation?station=&address="+address);
 			this.firestationService.deleteAddress(address);
 			return ResponseEntity.status(HttpStatus.OK).body("L'Address: " + address + " a bien été supprimée");
 		} 
+		LOGGER.error("received Delete request - with empty parameters");
 		return ResponseEntity.status(HttpStatus.OK).body("Veuillez spécifié une station, une address ou les deux");
 	}
 

@@ -2,8 +2,8 @@ package com.safetynet.safetynetalert.services;
 
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +19,7 @@ import com.safetynet.safetynetalert.repository.PersonRepository;
 @Service
 public class PersonServiceImpl implements PersonService {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(PersonServiceImpl.class);
+	private static final Logger LOGGER = LogManager.getLogger(PersonServiceImpl.class);
 
 	@Autowired
 	private PersonRepository personRepository;
